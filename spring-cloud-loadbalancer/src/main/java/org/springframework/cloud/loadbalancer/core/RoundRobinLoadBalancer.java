@@ -99,7 +99,11 @@ public class RoundRobinLoadBalancer implements ReactorServiceInstanceLoadBalance
 			return new EmptyResponse();
 		}
 		// TODO: enforce order?
-		int pos = Math.abs(this.position.incrementAndGet());
+		int currentPosition = this.position.incrementAndGet();
+		if (Objects.equals(Integer.MIN_VALUE, currentPosition)) {
+			pos = this.position.incrementAndGet();
+		}
+		int pos = Math.abs(currentPosition);
 
 		ServiceInstance instance = instances.get(pos % instances.size());
 
